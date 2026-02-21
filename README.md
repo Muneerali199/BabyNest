@@ -24,7 +24,7 @@
 <img src="https://img.shields.io/twitter/follow/AOSSIE" alt="X (formerly Twitter) Badge"/></a>
 &nbsp;&nbsp;
 <!-- YouTube -->
-<a href="https://www.youtube.com/@AOSSIE">
+<a href="https://www.youtube.com/@AOSSIE-Org">
 <img src="https://img.shields.io/youtube/channel/subscribers/UCZU5RJYz42z3T3Q4P4Y8XQ?style=flat&logo=youtube&logoColor=white&logoSize=auto&label=YouTube&labelColor=FF0000&color=FF0000" alt="YouTube Badge"/></a>
 &nbsp;&nbsp;
 <!-- Discord -->
