@@ -25,7 +25,7 @@
 &nbsp;&nbsp;
 <!-- YouTube -->
 <a href="https://www.youtube.com/@AOSSIE-Org">
-<img src="https://img.shields.io/youtube/channel/subscribers/UCZU5RJYz42z3T3Q4P4Y8XQ?style=flat&logo=youtube&logoColor=white&logoSize=auto&label=YouTube&labelColor=FF0000&color=FF0000" alt="YouTube Badge"/></a>
+<img src="https://img.shields.io/badge/YouTube-Channel-FF0000?style=flat&logo=youtube&logoColor=white" alt="YouTube Badge"/>
 &nbsp;&nbsp;
 <!-- Discord -->
 <a href="https://discord.gg/hjUhu33uAn">
