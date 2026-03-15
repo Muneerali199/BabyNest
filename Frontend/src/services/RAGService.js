@@ -2354,13 +2354,13 @@ class RAGService {
           endpoint = '/weight';
           break;
         case 'symptoms':
-          endpoint = '/get_symptoms';
+          endpoint = '/symptoms';
           break;
         case 'medicine':
           endpoint = '/get_medicine';
           break;
         case 'blood_pressure':
-          endpoint = '/get_blood_pressure';
+          endpoint = '/blood_pressure';
           break;
         case 'discharge':
           endpoint = '/get_discharge_logs';
