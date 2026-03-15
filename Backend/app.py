@@ -14,6 +14,7 @@ from routes.discharge import discharge_bp
 from routes.mood import mood_bp
 from routes.sleep import sleep_bp
 from routes.analytics import analytics_bp
+from routes.crud import crud_bp
 from error_handling.handlers import handle_missing_field_error, handle_not_found_error
 from error_handling.error_classes import MissingFieldError, NotFoundError
 from agent.agent import get_agent
@@ -41,6 +42,7 @@ app.register_blueprint(discharge_bp)
 app.register_blueprint(mood_bp)
 app.register_blueprint(sleep_bp)
 app.register_blueprint(analytics_bp)
+app.register_blueprint(crud_bp)
 
 # Register error handlers
 
@@ -135,6 +137,26 @@ def get_cache_status():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/agent/refresh", methods=["POST"])
+def refresh_agent_context():
+    """Refresh the agent context for a user."""
+    try:
+        if not request.is_json:
+            return jsonify({"error": "Invalid JSON format"}), 400
+        
+        data = request.get_json()
+        user_id = data.get("user_id", "default")
+        
+        agent.update_cache(data_type="all", operation="refresh")
+        
+        return jsonify({
+            "status": "success",
+            "message": "Context refreshed successfully",
+            "user_id": user_id
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/agent/context", methods=["GET"])
 def get_agent_context():
     """Get the current agent context for frontend use."""
@@ -225,6 +247,52 @@ def cleanup_cache():
             "status": "success",
             "message": "Cache cleanup completed",
             "statistics": stats
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/undo_last_action", methods=["POST"])
+def undo_last_action():
+    """Undo the last action performed by the agent."""
+    try:
+        if not request.is_json:
+            return jsonify({"error": "Invalid JSON format"}), 400
+        
+        data = request.get_json()
+        action_type = data.get("action_type")
+        record_id = data.get("record_id")
+        
+        if not action_type or not record_id:
+            return jsonify({"error": "action_type and record_id are required"}), 400
+        
+        db = open_db()
+        
+        if action_type == "create_appointment":
+            db.execute("DELETE FROM appointments WHERE id = ?", (record_id,))
+        elif action_type == "add_weight":
+            db.execute("DELETE FROM weekly_weight WHERE id = ?", (record_id,))
+        elif action_type == "log_mood":
+            db.execute("DELETE FROM mood_logs WHERE id = ?", (record_id,))
+        elif action_type == "log_sleep":
+            db.execute("DELETE FROM sleep_logs WHERE id = ?", (record_id,))
+        elif action_type == "add_medicine":
+            db.execute("DELETE FROM weekly_medicine WHERE id = ?", (record_id,))
+        elif action_type == "add_symptom":
+            db.execute("DELETE FROM weekly_symptoms WHERE id = ?", (record_id,))
+        elif action_type == "log_bp":
+            db.execute("DELETE FROM blood_pressure_logs WHERE id = ?", (record_id,))
+        elif action_type == "log_discharge":
+            db.execute("DELETE FROM discharge_logs WHERE id = ?", (record_id,))
+        else:
+            return jsonify({"error": f"Unknown action type: {action_type}"}), 400
+        
+        db.commit()
+        
+        agent.update_cache(data_type=action_type, operation="delete")
+        
+        return jsonify({
+            "status": "success",
+            "message": f"Action {action_type} with ID {record_id} undone successfully"
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -756,7 +756,7 @@ class ActionExecutor {
   async rollbackCreateAppointment(result) {
     try {
       if (result.appointmentId) {
-        const response = await fetch(`${BASE_URL}/appointments/${result.appointmentId}`, {
+        const response = await fetch(`${BASE_URL}/delete_appointment/${result.appointmentId}`, {
           method: 'DELETE'
         });
         
@@ -810,7 +810,7 @@ class ActionExecutor {
   async rollbackDeleteAppointment(result) {
     try {
       if (result.deletedAppointment) {
-        const response = await fetch(`${BASE_URL}/appointments`, {
+        const response = await fetch(`${BASE_URL}/add_appointment`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(result.deletedAppointment)

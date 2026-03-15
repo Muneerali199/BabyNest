@@ -47,18 +47,19 @@ def add_medicine():
         return jsonify({"error": "Invalid input values", "fields": fields}), 400
 
 
-    db.execute(
+    cursor = db.execute(
         'INSERT INTO weekly_medicine (week_number, name, dose, time, note) VALUES (?, ?, ?, ?, ?)',
         (week, name, dose, time, note)
     )
     db.commit()
+    medicine_id = cursor.lastrowid
 
     # Update cache after database update
     db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "db", "database.db")
     agent = get_agent(db_path)
     agent.update_cache(data_type="medicine", operation="create")
 
-    return jsonify({"status": "success", "message": "Medicine added"}), 201
+    return jsonify({"status": "success", "message": "Medicine added", "id": medicine_id}), 201
 
 # Read all
 @medicine_bp.route('/get_medicine', methods=['GET'])
