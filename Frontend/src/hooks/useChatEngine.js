@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { generateResponse } from '../model/model';
+import { generateResponse } from '../model/model.jsx';
 import { ragService } from '../services/RAGService';
 import { conversationContext } from '../services/ConversationContext';
 import { BASE_URL } from "@env";
