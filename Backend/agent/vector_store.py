@@ -1,27 +1,32 @@
-import chromadb
-from chromadb.utils import embedding_functions
 import json
 import os
 import hashlib
 
+try:
+    import chromadb
+    from chromadb.utils import embedding_functions
+    CHROMADB_AVAILABLE = True
+except ImportError:
+    CHROMADB_AVAILABLE = False
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHROMADB_PATH = os.path.join(BASE_DIR, "db", "chromadb")
-os.makedirs(CHROMADB_PATH, exist_ok=True)
-client = chromadb.PersistentClient(path=CHROMADB_PATH)
 
-# Use default embedding function instead of sentence transformers
-
-# Collection for pregnancy guidelines embeddings
-guidelines_collection = client.get_or_create_collection(
-    "pregnancy_guidelines",
-    embedding_function=embedding_functions.DefaultEmbeddingFunction()
-)
-
-# Separate collection for user details embeddings
-user_details_collection = client.get_or_create_collection(
-    "user_details",
-    embedding_function=embedding_functions.DefaultEmbeddingFunction()
-)
+if CHROMADB_AVAILABLE:
+    os.makedirs(CHROMADB_PATH, exist_ok=True)
+    client = chromadb.PersistentClient(path=CHROMADB_PATH)
+    guidelines_collection = client.get_or_create_collection(
+        "pregnancy_guidelines",
+        embedding_function=embedding_functions.DefaultEmbeddingFunction()
+    )
+    user_details_collection = client.get_or_create_collection(
+        "user_details",
+        embedding_function=embedding_functions.DefaultEmbeddingFunction()
+    )
+else:
+    client = None
+    guidelines_collection = None
+    user_details_collection = None
 
 _update_vector_store_callback = None
 
